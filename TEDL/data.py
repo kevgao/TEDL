@@ -51,7 +51,7 @@ class ComputedData(object):
         """
         self.attributes = getattributes(attr)
         self.rawdata, self.data = self.getdata()
-        self.formula = [x.formula for x in self.rawdata]
+        self.formula = [x['formula'] for x in self.rawdata]
 
     def getdata(self):
         """ 
