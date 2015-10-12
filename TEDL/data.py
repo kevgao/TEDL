@@ -159,7 +159,7 @@ class ComputedData(object):
 class Sample(object):
     def __init__(self,X_attr,Y_attr,test_proportion = 0.1,X_normalize = True, Y_normalize = False):
         self.raw_X,self.formula = ComputedData(X_attr).array()
-        self.raw_Y, = ComputedData(Y_attr).array()
+        self.raw_Y,xtemp= ComputedData(Y_attr).array()
 
         self.norm_X = normalize(self.raw_X,X_normalize)
         self.norm_Y = normalize(self.raw_Y,Y_normalize)
