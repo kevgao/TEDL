@@ -51,6 +51,7 @@ class ComputedData(object):
         """
         self.attributes = getattributes(attr)
         self.rawdata, self.data = self.getdata()
+        self.formula = [x.formula for x in self.rawdata]
 
     def getdata(self):
         """ 
@@ -147,7 +148,7 @@ class ComputedData(object):
                 listrow.append(row[attr])
             listdata.append(listrow)
             
-        return listdata
+        return listdata,self.formula
     
     def dict(self):
         return self.data
@@ -157,8 +158,8 @@ class ComputedData(object):
 
 class Sample(object):
     def __init__(self,X_attr,Y_attr,test_proportion = 0.1,X_normalize = True, Y_normalize = False):
-        self.raw_X = ComputedData(X_attr).array()
-        self.raw_Y = ComputedData(Y_attr).array()
+        self.raw_X,self.formula = ComputedData(X_attr).array()
+        self.raw_Y, = ComputedData(Y_attr).array()
 
         self.norm_X = normalize(self.raw_X,X_normalize)
         self.norm_Y = normalize(self.raw_Y,Y_normalize)
@@ -167,17 +168,19 @@ class Sample(object):
         self.train_Y = []
         self.test_X = []
         self.test_Y = []
+        self.test_formula=[]
 
         for i in range(len(self.raw_X)):
             if random.random() <= test_proportion:
                 self.test_X.append(self.norm_X[i])
                 self.test_Y.append(self.norm_Y[i])
+                self.test_formula.append(self.formula[i])
             else:
                 self.train_X.append(self.norm_X[i])
                 self.train_Y.append(self.norm_Y[i])
                 
     def data(self):
-        return self.train_X, self.test_X, self.train_Y, self.test_Y
+        return self.train_X, self.test_X, self.train_Y, self.test_Y, self.test_formula
         
 
 def normalize(raw,normalize):
