@@ -62,14 +62,16 @@ class ComputedData(object):
         rawdata = []
         pickeddata = []
         raw = requests.get('http://tedesignlab.org/plot?elements=').json()
+        id = 0
         for line in raw:
-            rawrow, pickedrow = self.getrowdata(line)
+            id = id +1
+            rawrow, pickedrow = self.getrowdata(line,id)
             rawdata.append(rawrow)
             pickeddata.append(pickedrow)
         
         return rawdata, pickeddata
 
-    def getrowdata(self, row):
+    def getrowdata(self, row,id):
         """ 
         method to deal with a sigle record from the database
         this method would return two dicts, rawrow and pickedrow
@@ -77,7 +79,7 @@ class ComputedData(object):
         pickedrow is a subset of the rawrow filtered by user configurated attributes
         """
         rawrow = {
-            'id':int(0),
+            'id':id,
             'formula':row['formula'],
             'icsd':row['icsd'],
             'spacegroup':int(row['spacegroup']),
