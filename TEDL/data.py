@@ -223,7 +223,7 @@ def getattributes(attrstr):
         confs = []
         for conf in confstr:
             tmp=getpartialattributes(conf)
-            if ex:
+            if ex in tmp:
                 tmp.remove(ex)
             if tmp:
                 confs.append(tmp)
@@ -324,4 +324,4 @@ def combineattributes(attrparts):
     
     
 if __name__ == '__main__':
-    test = ComputedData()
+    test = ComputedData('parent+structure-B')
