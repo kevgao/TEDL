@@ -325,3 +325,5 @@ def combineattributes(attrparts):
     
 if __name__ == '__main__':
     test = ComputedData('parent+structure-B')
+    print test.attributes
+    print len(test.attributes)
