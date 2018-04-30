@@ -150,7 +150,7 @@ class ComputedData(object):
                 listrow.append(row[attr])
             listdata.append(listrow)
             
-        return listdata,self.formula
+        return listdata, self.formula, self.attributes
     
     def dict(self):
         return self.data
@@ -158,32 +158,52 @@ class ComputedData(object):
     def attributes(self):
         return self.attributes
 
-class Sample(object):
-    def __init__(self,X_attr,Y_attr,test_proportion = 0.1,X_normalize = True, Y_normalize = False):
-        self.raw_X,self.formula = ComputedData(X_attr).array()
-        self.raw_Y,xtemp= ComputedData(Y_attr).array()
+class Sampling(object):
+    def __init__(self,X_attr,Y_attr,filter = None, test_proportion = 0.1,X_normalize = True, Y_normalize = False):
+        '''
+        '''
+        raw_X, raw_X_formula, self.features = ComputedData(X_attr).array()
+        raw_Y, raw_Y_formula, self.target = ComputedData(Y_attr).array()
+        if raw_X_formula == raw_Y_formula:
+            formula = raw_X_formula
+        else:
+            raise ValueError
+        filter_ind = [i for i in range(len(formula)) if filter_formula(formula[i], filter)]
+        
+        if len(filter_ind) == 0:
+            print("No filtered result.")
+            raise ValueError
+        self.formula = [formula[x] for x in filter_ind]
+        self.raw_X = [raw_X[x] for x in filter_ind]
+        self.raw_Y = [raw_Y[x] for x in filter_ind]
 
         self.norm_X = normalize(self.raw_X,X_normalize)
         self.norm_Y = normalize(self.raw_Y,Y_normalize)
         
-        self.train_X = []
-        self.train_Y = []
-        self.test_X = []
-        self.test_Y = []
-        self.test_formula=[]
+        test_index = random.sample(range(len(self.formula)), int(test_proportion*len(self.formula)))
+        train_index = [x for x in range(len(self.formula)) if x not in test_index]
 
-        for i in range(len(self.raw_X)):
-            if random.random() <= test_proportion:
-                self.test_X.append(self.norm_X[i])
-                self.test_Y.append(self.norm_Y[i])
-                self.test_formula.append(self.formula[i])
-            else:
-                self.train_X.append(self.norm_X[i])
-                self.train_Y.append(self.norm_Y[i])
+        self.train_X = [self.norm_X[x] for x in train_index]
+        self.train_Y = [self.norm_Y[x] for x in train_index]
+        self.train_formula = [self.formula[x] for x in train_index]
+        self.test_X = [self.norm_X[x] for x in test_index]
+        self.test_Y = [self.norm_Y[x] for x in test_index]
+        self.test_formula = [self.formula[x] for x in test_index]
                 
     def data(self):
         return self.train_X, self.test_X, self.train_Y, self.test_Y, self.test_formula
-        
+
+
+def filter_formula(formula, filter):
+    if filter:
+        elements=filter.split()
+        for element in elements:
+            if element.lower() not in formula.lower():
+                return False
+        return True
+    else:
+        return True
+
 
 def normalize(raw,normalize):
     if not normalize:
@@ -199,7 +219,10 @@ def minmaxnorm(raw):
     norm = []
     for i in range(len(raw[0])):
         raw_tmp = [x[i] for x in raw]
-        norm_tmp = [(x-min(raw_tmp))/(max(raw_tmp)-min(raw_tmp)) for x in raw_tmp]
+        if max(raw_tmp)>min(raw_tmp):
+            norm_tmp = [(x-min(raw_tmp))/(max(raw_tmp)-min(raw_tmp)) for x in raw_tmp]
+        else:
+            norm_tmp = raw_tmp
         norm.append(norm_tmp)
     norm2 = []
     for j in range(len(norm[0])):
@@ -324,6 +347,9 @@ def combineattributes(attrparts):
     
     
 if __name__ == '__main__':
-    test = ComputedData('parent+structure-B')
-    print(test.attributes)
-    print(len(test.attributes))
+    test = Sampling('structure-B', 'B', filter='Al S O', X_normalize = False, Y_normalize = False)
+    print(test.formula)
+    print(test.train_X)
+    print(len(test.formula))
+    print(test.features)
+    print(test.target)
