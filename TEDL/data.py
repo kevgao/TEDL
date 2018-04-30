@@ -163,7 +163,7 @@ class Sampling(object):
         '''
         '''
         raw_X, raw_X_formula, self.features = TEDLData(X_attr).array()
-        raw_Y, raw_Y_formula, self.target = TEDLData(Y_attr).array()
+        raw_Y, raw_Y_formula, self.targets = TEDLData(Y_attr).array()
         if raw_X_formula == raw_Y_formula:
             formula = raw_X_formula
         else:
@@ -184,14 +184,14 @@ class Sampling(object):
         train_index = [x for x in range(len(self.formula)) if x not in test_index]
 
         self.train_X = [self.norm_X[x] for x in train_index]
-        self.train_Y = [self.norm_Y[x] for x in train_index]
+        self.train_y = [self.norm_Y[x] for x in train_index]
         self.train_formula = [self.formula[x] for x in train_index]
         self.test_X = [self.norm_X[x] for x in test_index]
-        self.test_Y = [self.norm_Y[x] for x in test_index]
+        self.test_y = [self.norm_Y[x] for x in test_index]
         self.test_formula = [self.formula[x] for x in test_index]
                 
-    def data(self):
-        return self.train_X, self.test_X, self.train_Y, self.test_Y, self.test_formula
+    #def data(self):
+    #    return self.train_X, self.test_X, self.train_Y, self.test_Y, self.test_formula
 
 
 def filter_formula(formula, filter):
@@ -352,4 +352,4 @@ if __name__ == '__main__':
     print(test.train_X)
     print(len(test.formula))
     print(test.features)
-    print(test.target)
+    print(test.targets)

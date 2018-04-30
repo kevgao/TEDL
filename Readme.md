@@ -32,3 +32,19 @@ or
 ```
 from TEDL.data import Sampling
 ```
+
+If you are using the dataset for train/test experiments, the Sampling class is right for you:
+```
+samples = Sampling('structure-B', 'B', filter='Al S O', X_normalize = False, Y_normalize = False)
+```
+You can easily use the data like:
+```
+print(samples.formula) # formulas of sample compounds
+print(samples.features) 
+print(samples.targets) 
+
+print(samples.train_X)
+print(samples.train_y)
+print(samples.test_X)
+print(samples.test_y)
+```
