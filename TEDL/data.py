@@ -40,7 +40,7 @@ COM_ATTR = [
     'betasen',
 ]
 
-class ComputedData(object):
+class TEDLData(object):
     """ComputedData Object
     
     Object covering 
@@ -162,8 +162,8 @@ class Sampling(object):
     def __init__(self,X_attr,Y_attr,filter = None, test_proportion = 0.1,X_normalize = True, Y_normalize = False):
         '''
         '''
-        raw_X, raw_X_formula, self.features = ComputedData(X_attr).array()
-        raw_Y, raw_Y_formula, self.target = ComputedData(Y_attr).array()
+        raw_X, raw_X_formula, self.features = TEDLData(X_attr).array()
+        raw_Y, raw_Y_formula, self.target = TEDLData(Y_attr).array()
         if raw_X_formula == raw_Y_formula:
             formula = raw_X_formula
         else:

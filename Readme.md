@@ -7,13 +7,28 @@ Introduction
 The TEDL package is the comprehensive Python tool for accessing compound datasets on Tedesignlab.org.
 
 
+
+
 Install
 -------
 For Python 2.7:
+```
 pip install -e git+https://github.com/kevgao/TEDL.git#egg=TEDL
-
+```
 For Python 3:
+```
 pip3 install -e git+https://github.com/kevgao/TEDL.git#egg=TEDL
+```
 
 
 
+How to Use
+-----------
+In python, you can import the package like this:
+```
+from TEDL.data import TEDLData
+```
+or
+```
+from TEDL.data import Sampling
+```
