@@ -154,9 +154,7 @@ class TEDLData(object):
     
     def dict(self):
         return self.data
-
-    def attributes(self):
-        return self.attributes
+        
 
 class Sampling(object):
     def __init__(self,X_attr,Y_attr,filter = None, test_proportion = 0.1,X_normalize = True, Y_normalize = False):
