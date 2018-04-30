@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'TEDL',
-    version = '0.0.6',
+    version = '0.1.0',
     description = 'TEDL Python Package',
     author = 'Duanfeng Gao',
     author_email = 'kevgao@live.com',
