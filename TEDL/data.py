@@ -159,15 +159,17 @@ class TEDLData(object):
 class Sampling(object):
     '''
     '''
-    def __init__(self,X_attr,Y_attr,filter = None, split = True, test_proportion = 0.1, X_normalize = False, Y_normalize = False):
+    def __init__(self, features, targets = None, filter = None, split = True, test_proportion = 0.1, X_normalize = False, Y_normalize = False):
         '''
         '''
-        raw_X, raw_X_formula, self.features = TEDLData(X_attr).array()
-        raw_Y, raw_Y_formula, self.targets = TEDLData(Y_attr).array()
-        if raw_X_formula == raw_Y_formula:
-            formula = raw_X_formula
-        else:
-            raise ValueError
+        raw_X, raw_X_formula, self.features = TEDLData(features).array()
+        if targets:
+            raw_Y, raw_Y_formula, self.targets = TEDLData(targets).array()
+            if raw_X_formula != raw_Y_formula:
+                raise ValueError
+
+        formula = raw_X_formula
+        
         filter_ind = [i for i in range(len(formula)) if filter_formula(formula[i], filter)]
         
         if len(filter_ind) == 0:
@@ -175,26 +177,30 @@ class Sampling(object):
             raise ValueError
 
         self.formula = [formula[x] for x in filter_ind]
-        self.raw_X = [raw_X[x] for x in filter_ind]
-        self.raw_Y = [raw_Y[x] for x in filter_ind]
 
-        self.norm_X = normalize(self.raw_X,X_normalize)
-        self.norm_Y = normalize(self.raw_Y,Y_normalize)
+        raw_X = [raw_X[x] for x in filter_ind]
+        norm_X = normalize(raw_X, X_normalize)
         
-        if split:
-            test_index = random.sample(range(len(self.formula)), int(test_proportion*len(self.formula)))
-            train_index = [x for x in range(len(self.formula)) if x not in test_index]
+        if targets:
+            raw_Y = [raw_Y[x] for x in filter_ind]
+            norm_Y = normalize(raw_Y,Y_normalize)
+        
+            if split:
+                test_index = random.sample(range(len(self.formula)), int(test_proportion*len(self.formula)))
+                train_index = [x for x in range(len(self.formula)) if x not in test_index]
 
-            self.train_X = [self.norm_X[x] for x in train_index]
-            self.train_y = [self.norm_Y[x] for x in train_index]
-            self.train_formula = [self.formula[x] for x in train_index]
-            self.test_X = [self.norm_X[x] for x in test_index]
-            self.test_y = [self.norm_Y[x] for x in test_index]
-            self.test_formula = [self.formula[x] for x in test_index]
+                self.train_X = [norm_X[x] for x in train_index]
+                self.train_y = [norm_Y[x] for x in train_index]
+                self.train_formula = [self.formula[x] for x in train_index]
+                self.test_X = [norm_X[x] for x in test_index]
+                self.test_y = [norm_Y[x] for x in test_index]
+                self.test_formula = [formula[x] for x in test_index]
 
+            else:
+                self.X = norm_X
+                self.y = norm_Y
         else:
-            self.X = self.norm_X
-            self.y = self.norm_Y
+            self.X = norm_X
             
 
                 
@@ -368,3 +374,8 @@ if __name__ == '__main__':
     print(test2.formula)
     print(test2.features)
     print(test2.targets)
+
+    test3 = Sampling('structure', filter='Al')
+    print(test3.X)
+    print(test3.features)
+    print(test3.formula)
